@@ -17,6 +17,7 @@ Backend:
    - ACCESS_CODES=sAWTuR
    - USE_MEMORY_STORE=true
    - JWT_SECRET=any-strong-string
+   - FRONTEND_ORIGIN=http://localhost:3000
 4. npm install
 5. npm run dev
 Health: GET http://localhost:4000/

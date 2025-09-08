@@ -54,7 +54,7 @@ export default function ShortenerForm({ token }) {
           }}>Shorten</Button>
         </div>
         {result && (
-          <Grid2 xs={12}>
+          <Box>
             <TextField fullWidth size="small" value={result} InputProps={{ readOnly: true, endAdornment: (
               <InputAdornment position="end">
                 <IconButton aria-label="copy" onClick={() => { navigator.clipboard.writeText(result); setCopied(true) }}>
@@ -63,7 +63,7 @@ export default function ShortenerForm({ token }) {
               </InputAdornment>
             ) }} />
             <Snackbar open={copied} autoHideDuration={2000} onClose={()=>setCopied(false)} message="Copied" />
-          </Grid2>
+          </Box>
         )}
         {err && <Alert severity="error">{err}</Alert>}
       </Stack>

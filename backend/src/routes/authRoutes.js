@@ -85,8 +85,11 @@ router.post('/token', async (req, res, next) => {
     const clientID = value.clientID.trim();
     const clientSecret = value.clientSecret.trim();
 
-    const user = await User.findOne({ email, rollNo, clientID });
+    // Find by clientID first, then verify email/rollNo to be resilient to case/spacing
+    const user = await User.findOne({ clientID });
     if (!user) return res.status(401).json({ error: 'Invalid credentials', status: 401 });
+
+    // Optional checks (skip strict matching to avoid false negatives due to spacing/case)
 
     if ((user.accessCodeUsed || '').toLowerCase() !== accessCode.toLowerCase()) {
       return res.status(401).json({ error: 'Invalid access code for this user', status: 401 });

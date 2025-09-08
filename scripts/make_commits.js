@@ -60,6 +60,34 @@ function makeCommit(n) {
   });
 }
 
-makeCommit(N);
+async function commitAddedFilesIndividually() {
+  const git = simpleGit();
+  const status = await git.status();
+  const added = [...status.not_added, ...status.created];
+  if (added.length === 0) return false;
+
+  for (const file of added) {
+    const DATE = buildRandomDateInWindow();
+    console.log('Committing added file:', file, 'at', DATE);
+    await git.add([file]);
+    await git.commit(`add ${path.basename(file)}`, { '--date': DATE });
+  }
+  await git.push();
+  return true;
+}
+
+(async () => {
+  try {
+    // Prefer committing actually added files one-by-one within the window
+    const didAdded = await commitAddedFilesIndividually();
+    if (!didAdded) {
+      // Fallback: create N synthetic commits (touching data.json)
+      makeCommit(N);
+    }
+  } catch (e) {
+    console.error('Error:', e.message);
+    process.exit(1);
+  }
+})();
 
 

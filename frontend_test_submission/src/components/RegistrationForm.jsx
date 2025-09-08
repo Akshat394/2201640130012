@@ -3,7 +3,7 @@ import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentTex
 import { apiJson } from '../api'
 
 export default function RegistrationForm() {
-  const [form, setForm] = useState({ email: '', name: '', mobileNo: '', githubUsername: '', rollNo: '', accessCode: '' })
+  const [form, setForm] = useState({ email: '2k22.it.2212536@gmail.com', name: '', mobileNo: '', githubUsername: '', rollNo: '', accessCode: '' })
   const [err, setErr] = useState('')
   const [creds, setCreds] = useState(null)
 

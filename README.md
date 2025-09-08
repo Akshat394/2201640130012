@@ -1,57 +1,50 @@
-# <2201640130012> — URL Shortener Application
+# URL Shortener — 2201640130012
 
-Author: 2201640130012
+This is my full‑stack submission for the URL Shortener assignment. It includes an Express backend, a React (Vite) frontend, and a separate logging middleware. I aimed for a clean, readable codebase and a smooth local setup.
 
-## Project structure
+## Structure
 - logging_middleware/
 - backend/
 - backend_test_submission/
 - frontend_test_submission/
 - README.md
 
-## Running backend (dev)
+## Run locally
+Backend:
 1. cd backend
-2. cp .env.example .env and populate values (MONGODB_URI, JWT_SECRET, ACCESS_CODES, BASE_URL, LOG_DIR)
-3. npm install
-4. npm run dev
+2. cp .env.example .env
+3. In .env set:
+   - ACCESS_CODES=sAWTuR
+   - USE_MEMORY_STORE=true
+   - JWT_SECRET=any-strong-string
+4. npm install
+5. npm run dev
+Health: GET http://localhost:4000/
 
-## Endpoints
-### Registration
-POST /auth/register
-Body:
-{
-  "email":"ram@college.edu",
-  "name":"Ram Krishna",
-  "mobileNo":"9999999999",
-  "githubUsername":"github",
-  "rollNo":"a4ibb",
-  "accessCode":"<provided-by-admin>"
-}
-Response: { clientID, clientSecret } // clientSecret shown only once
+Frontend:
+1. cd frontend_test_submission
+2. npm install
+3. npm run dev
+UI: http://localhost:3000
 
-### Token
-POST /auth/token
-Body: { email, name, rollNo, accessCode, clientID, clientSecret }
-Response: { token, expiresIn }
+## How to use
+1) Register (Register tab). You’ll receive clientID and clientSecret once; the UI also downloads a text file. Save them.
+2) Authenticate (Authenticate tab) with the same details and access code to get a JWT.
+3) Shorten links (Shorten tab). You can add up to 5 at once, choose validity, and optionally set a custom shortcode.
+4) Dashboard lists your links and lets you expand rows to see recent clicks with timestamp, referrer, user agent, and IP.
 
-### Create short link
-POST /shorturls
-Body: { url, validity (minutes), shortcode (optional) }
-Response: { shortLink, expiry }
-
-### Redirect
-GET /shorturls/:shortcode
--> redirects to original URL
-
-### Stats
-GET /shorturls/:shortcode/stats
-Response: { shortcode, redirects, expiry }
+## API at a glance
+- POST /auth/register → { clientID, clientSecret }
+- POST /auth/token → { token, expiresIn }
+- POST /shorturls → { shortLink, expiry }
+- GET /shorturls/:shortcode → 302 redirect
+- GET /shorturls/:shortcode/stats → { shortcode, redirects, expiry, clicks[] }
+- GET /shorturls (auth) → { links: [...] }
+Errors: { error, status }
 
 ## Logging
-- Logging middleware is in `logging_middleware/`
-- Logs written to `logging_middleware/logs/requests.log` and `errors.log`
-- Do not commit logs
+Custom middleware in logging_middleware/ writes JSON lines to logs/requests.log and logs/errors.log (gitignored). No request console logging.
 
 ## Notes
-- Save `clientSecret` securely (only returned once).
-- All commit messages contain author name.
+- Memory mode keeps setup simple. For persistence, set USE_MEMORY_STORE=false and configure MONGODB_URI.
+- Shortcodes are unique and validated (alphanumeric, optional custom codes).

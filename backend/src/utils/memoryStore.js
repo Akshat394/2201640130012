@@ -1,12 +1,11 @@
 class MemoryUsers {
   constructor() { this.users = []; }
   async findOne(query) {
-    return this.users.find(u => Object.keys(query).some(k => {
-      if (query[k] && query[k].$or) {
-        return query[k].$or.some(cond => this._match(u, cond))
-      }
-      return this._match(u, query)
-    })) || null
+    // handle top-level $or or direct equality match (AND on keys)
+    if (query.$or && Array.isArray(query.$or)) {
+      return this.users.find(u => query.$or.some(cond => this._match(u, cond))) || null
+    }
+    return this.users.find(u => this._match(u, query)) || null
   }
   _match(obj, q) {
     return Object.keys(q).every(k => obj[k] === q[k])
